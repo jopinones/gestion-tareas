@@ -1,0 +1,62 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f1f5f9;
+}
+
+.menu-lateral {
+  width: 240px;
+  min-height: 100vh;
+  background: #1e293b;
+  display: flex;
+  flex-direction: column;
+  padding: 28px 16px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.menu-lateral h1 {
+  color: #f8fafc;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0 0 36px 0;
+  padding: 0 12px;
+  letter-spacing: 0.5px;
+}
+
+.menu-lateral nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.menu-lateral a {
+  color: #94a3b8;
+  text-decoration: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.93rem;
+  transition: background 0.15s, color 0.15s;
+  display: block;
+}
+
+.menu-lateral a:hover {
+  background-color: #334155;
+  color: #e2e8f0;
+}
+
+.menu-lateral a.activo {
+  background-color: #0891b2;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.contenido {
+  flex: 1;
+  padding: 32px;
+  overflow: auto;
+}

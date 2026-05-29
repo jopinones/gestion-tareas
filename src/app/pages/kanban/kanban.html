@@ -1,0 +1,133 @@
+<div class="kanban-container">
+  <h1>Tablero Kanban</h1>
+
+  <div class="kanban-board">
+
+    <!-- Pendiente -->
+    <div class="kanban-column">
+      <div class="column-header col-pendiente">
+        <mat-icon>radio_button_unchecked</mat-icon>
+        <span class="column-title">Pendiente</span>
+        <span class="column-count">{{ pendientes.length }}</span>
+      </div>
+
+      <div class="column-body"
+           cdkDropList
+           #pendienteList="cdkDropList"
+           [cdkDropListData]="pendientes"
+           [cdkDropListConnectedTo]="[procesoList, finalizadaList]"
+           (cdkDropListDropped)="drop($event, 'Pendiente')">
+
+        @for (tarea of pendientes; track tarea.id) {
+          <div class="task-card" cdkDrag>
+            <div class="task-header">
+              <mat-icon class="drag-icon">drag_indicator</mat-icon>
+              <span [class]="clasePrioridad(tarea.prioridad)">{{ tarea.prioridad }}</span>
+              <button mat-icon-button class="btn-delete" (click)="$event.stopPropagation(); eliminarTarea(tarea.id)">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+            <h3 class="task-title">{{ tarea.titulo }}</h3>
+            <p class="task-desc">{{ tarea.descripcion }}</p>
+            <div class="task-footer">
+              <mat-icon class="icon-cal">calendar_today</mat-icon>
+              <span>{{ tarea.fechaCreacion | date: 'dd-MM-yyyy' }}</span>
+            </div>
+          </div>
+        }
+
+        @if (pendientes.length === 0) {
+          <div class="empty-column">
+            <mat-icon>inbox</mat-icon>
+            <span>Sin tareas</span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- En proceso -->
+    <div class="kanban-column">
+      <div class="column-header col-proceso">
+        <mat-icon>timelapse</mat-icon>
+        <span class="column-title">En proceso</span>
+        <span class="column-count">{{ enProceso.length }}</span>
+      </div>
+
+      <div class="column-body"
+           cdkDropList
+           #procesoList="cdkDropList"
+           [cdkDropListData]="enProceso"
+           [cdkDropListConnectedTo]="[pendienteList, finalizadaList]"
+           (cdkDropListDropped)="drop($event, 'En proceso')">
+
+        @for (tarea of enProceso; track tarea.id) {
+          <div class="task-card" cdkDrag>
+            <div class="task-header">
+              <mat-icon class="drag-icon">drag_indicator</mat-icon>
+              <span [class]="clasePrioridad(tarea.prioridad)">{{ tarea.prioridad }}</span>
+              <button mat-icon-button class="btn-delete" (click)="$event.stopPropagation(); eliminarTarea(tarea.id)">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+            <h3 class="task-title">{{ tarea.titulo }}</h3>
+            <p class="task-desc">{{ tarea.descripcion }}</p>
+            <div class="task-footer">
+              <mat-icon class="icon-cal">calendar_today</mat-icon>
+              <span>{{ tarea.fechaCreacion | date: 'dd-MM-yyyy' }}</span>
+            </div>
+          </div>
+        }
+
+        @if (enProceso.length === 0) {
+          <div class="empty-column">
+            <mat-icon>inbox</mat-icon>
+            <span>Sin tareas</span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Finalizada -->
+    <div class="kanban-column">
+      <div class="column-header col-finalizada">
+        <mat-icon>check_circle</mat-icon>
+        <span class="column-title">Finalizada</span>
+        <span class="column-count">{{ finalizadas.length }}</span>
+      </div>
+
+      <div class="column-body"
+           cdkDropList
+           #finalizadaList="cdkDropList"
+           [cdkDropListData]="finalizadas"
+           [cdkDropListConnectedTo]="[pendienteList, procesoList]"
+           (cdkDropListDropped)="drop($event, 'Finalizada')">
+
+        @for (tarea of finalizadas; track tarea.id) {
+          <div class="task-card" cdkDrag>
+            <div class="task-header">
+              <mat-icon class="drag-icon">drag_indicator</mat-icon>
+              <span [class]="clasePrioridad(tarea.prioridad)">{{ tarea.prioridad }}</span>
+              <button mat-icon-button class="btn-delete" (click)="$event.stopPropagation(); eliminarTarea(tarea.id)">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+            <h3 class="task-title">{{ tarea.titulo }}</h3>
+            <p class="task-desc">{{ tarea.descripcion }}</p>
+            <div class="task-footer">
+              <mat-icon class="icon-cal">calendar_today</mat-icon>
+              <span>{{ tarea.fechaCreacion | date: 'dd-MM-yyyy' }}</span>
+            </div>
+          </div>
+        }
+
+        @if (finalizadas.length === 0) {
+          <div class="empty-column">
+            <mat-icon>inbox</mat-icon>
+            <span>Sin tareas</span>
+          </div>
+        }
+      </div>
+    </div>
+
+  </div>
+</div>

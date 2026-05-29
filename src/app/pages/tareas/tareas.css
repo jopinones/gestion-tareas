@@ -1,0 +1,128 @@
+.contenedor {
+  max-width: 1100px;
+}
+
+.contenedor h1 {
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 24px 0;
+}
+
+/* Form card */
+.card-formulario {
+  margin-bottom: 24px;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08) !important;
+}
+
+.formulario {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px 16px;
+  align-items: start;
+}
+
+.formulario mat-form-field {
+  width: 100%;
+}
+
+.formulario button {
+  height: 56px;
+  align-self: center;
+  margin-top: 4px;
+  border-radius: 8px !important;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+/* Table card */
+mat-card:not(.card-formulario):not(.mensaje) {
+  border-radius: 12px !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08) !important;
+}
+
+.tabla-tareas {
+  width: 100%;
+}
+
+/* Status badges */
+.estado-pendiente,
+.estado-proceso,
+.estado-finalizada {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.estado-pendiente {
+  background: #fef9c3;
+  color: #854d0e;
+}
+
+.estado-proceso {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.estado-finalizada {
+  background: #dcfce7;
+  color: #166534;
+}
+
+/* Priority badges */
+.prioridad-alta,
+.prioridad-media,
+.prioridad-baja {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.prioridad-alta {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.prioridad-media {
+  background: #ffedd5;
+  color: #9a3412;
+}
+
+.prioridad-baja {
+  background: #f0fdf4;
+  color: #166534;
+}
+
+/* Action buttons */
+.acciones {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 4px 0;
+}
+
+.btn-estado {
+  background-color: #0891b2 !important;
+  color: white !important;
+  font-size: 0.8rem !important;
+}
+
+/* Empty state */
+.mensaje {
+  border-radius: 12px !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08) !important;
+}
+
+.mensaje mat-card-content {
+  text-align: center;
+  padding: 40px 16px !important;
+  color: #64748b;
+  font-size: 1rem;
+}
