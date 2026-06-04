@@ -1,74 +1,40 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+ 
 import { Task } from '../models/task';
  
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class TaskService {
-  private storageKey = 'tareas';
  
-  obtenerTareas(): Task[] {
-    const data = localStorage.getItem(this.storageKey);
+  private apiUrl = 'http://localhost:3000/tareas';
  
-    if (data) {
-      return JSON.parse(data);
-    }
+  constructor(private http: HttpClient) {}
  
-    const tareasIniciales: Task[] = [
-      {
-        id: 1,
-        titulo: 'Reunión de Coordinación',
-        estado: 'Pendiente',
-        prioridad: 'Alta',
-        fechaCreacion: '2026-05-28',
-        descripcion: 'Reunión del equipo de trabajo'
-      },
-      {
-        id: 2,
-        titulo: 'Preparar informe de reunión de coordinación',
-        estado: 'Pendiente',
-        prioridad: 'Media',
-        fechaCreacion: '2026-05-28',
-        descripcion: 'Resumir lo tratado en la reunión'
-      },
-    ];
- 
-    this.guardarTareas(tareasIniciales);
- 
-    return tareasIniciales;
+  obtenerTareas(): Observable<Task[]> {
+    return this.http.get<Task[]>(this.apiUrl);
   }
  
-  agregarTarea(tarea: Task){
-    const tareas = this.obtenerTareas();
- 
-    tareas.push(tarea);
-   
-    this.guardarTareas(tareas);
+  obtenerPorId(id: string): Observable<Task> {
+    return this.http.get<Task>(`${this.apiUrl}/${id}`);
   }
  
-  eliminarTarea(id: number){
-    const tareas = this.obtenerTareas();
- 
-    const tareasActualizadas = tareas.filter(t => t.id !== id);
- 
-    this.guardarTareas(tareasActualizadas);
+  agregarTarea(tarea: Task): Observable<Task> {
+    return this.http.post<Task>(this.apiUrl, tarea);
   }
  
-  actualizarTareas(tareaActualizada: Task){
-    const tareas = this.obtenerTareas();
- 
-    const tareasActualizadas = tareas.map(t => {
-      if (t.id === tareaActualizada.id){
-        return tareaActualizada;
-      }
- 
-      return t;
-    });
- 
-    this.guardarTareas(tareasActualizadas);
+  actualizarTarea(tarea: Task): Observable<Task> {
+    return this.http.put<Task>(
+      `${this.apiUrl}/${tarea.id}`,
+      tarea
+    );
   }
  
-  guardarTareas(tareas: Task[]){
-    localStorage.setItem(this.storageKey, JSON.stringify(tareas));
+  eliminarTarea(id: string): Observable<void> {
+    return this.http.delete<void>(
+      `${this.apiUrl}/${id}`
+    );
   }
 }

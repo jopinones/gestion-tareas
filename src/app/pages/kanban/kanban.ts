@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { MatCardModule } from '@angular/material/card';
@@ -19,17 +19,22 @@ export class Kanban implements OnInit {
   enProceso: Task[] = [];
   finalizadas: Task[] = [];
 
-  constructor(private taskService: TaskService) {}
+  constructor(private taskService: TaskService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.cargarTareas();
   }
 
   cargarTareas() {
-    const todas = this.taskService.obtenerTareas();
-    this.pendientes = todas.filter((t) => t.estado === 'Pendiente');
-    this.enProceso = todas.filter((t) => t.estado === 'En proceso');
-    this.finalizadas = todas.filter((t) => t.estado === 'Finalizada');
+    this.taskService.obtenerTareas().subscribe({
+      next: (todas) => {
+        this.pendientes = todas.filter((t) => t.estado === 'Pendiente');
+        this.enProceso = todas.filter((t) => t.estado === 'En proceso');
+        this.finalizadas = todas.filter((t) => t.estado === 'Finalizada');
+        this.cdr.markForCheck();
+      },
+      error: (err) => console.error('Error al cargar tareas', err),
+    });
   }
 
   drop(event: CdkDragDrop<Task[]>, nuevoEstado: string) {
@@ -44,14 +49,18 @@ export class Kanban implements OnInit {
       );
       const tarea = event.container.data[event.currentIndex];
       tarea.estado = nuevoEstado;
-      this.taskService.actualizarTareas(tarea);
+      this.taskService.actualizarTarea(tarea).subscribe({
+        error: (err) => console.error('Error al actualizar tarea', err),
+      });
     }
   }
 
-  eliminarTarea(id: number) {
+  eliminarTarea(id: string) {
     if (!confirm('¿Está seguro de eliminar la tarea?')) return;
-    this.taskService.eliminarTarea(id);
-    this.cargarTareas();
+    this.taskService.eliminarTarea(id).subscribe({
+      next: () => this.cargarTareas(),
+      error: (err) => console.error('Error al eliminar tarea', err),
+    });
   }
 
   clasePrioridad(prioridad: string): string {

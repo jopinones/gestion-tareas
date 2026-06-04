@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 
@@ -11,6 +11,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTableDataSource } from '@angular/material/table';
 
 import { Task } from '../../models/task';
 import { TaskService } from '../../services/task';
@@ -34,13 +35,14 @@ import { TaskService } from '../../services/task';
   styleUrl: './tareas.css',
 })
 export class Tareas implements OnInit {
-  tareas: Task[] = [];
+  dataSource = new MatTableDataSource<Task>();
+
   fechaSeleccionada: Date | null = null;
 
   columnas: string[] = ['id', 'titulo', 'estado', 'prioridad', 'fecha', 'descripcion', 'acciones'];
 
   nuevaTarea: Task = {
-    id: 0,
+    id: '',
     titulo: '',
     estado: '',
     prioridad: '',
@@ -48,14 +50,22 @@ export class Tareas implements OnInit {
     descripcion: '',
   };
 
-  constructor(private taskService: TaskService) {}
+  constructor(private taskService: TaskService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.cargarTareas();
   }
 
   cargarTareas() {
-    this.tareas = this.taskService.obtenerTareas();
+    this.taskService.obtenerTareas().subscribe({
+      next: (datos) => {
+        this.dataSource.data = datos;
+        this.cdr.markForCheck();
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
   }
 
   agregarTarea() {
@@ -70,8 +80,7 @@ export class Tareas implements OnInit {
       return;
     }
 
-    const tarea: Task = {
-      id: Date.now(),
+    const tarea = {
       titulo: this.nuevaTarea.titulo,
       estado: this.nuevaTarea.estado,
       prioridad: this.nuevaTarea.prioridad,
@@ -79,16 +88,22 @@ export class Tareas implements OnInit {
       descripcion: this.nuevaTarea.descripcion,
     };
 
-    this.taskService.agregarTarea(tarea);
-    this.cargarTareas();
-    this.limpiarFormulario();
+    this.taskService.agregarTarea(tarea as Task).subscribe({
+      next: () => {
+        this.cargarTareas();
+        this.limpiarFormulario();
+      },
+    });
   }
 
-  eliminarTarea(id: number) {
+  eliminarTarea(id: string) {
     const confirmar = confirm('¿Está seguro de eliminar la tarea?');
     if (!confirmar) return;
-    this.taskService.eliminarTarea(id);
-    this.cargarTareas();
+    this.taskService.eliminarTarea(id).subscribe({
+      next: () => {
+        this.cargarTareas();
+      },
+    });
   }
 
   cambiarEstado(tarea: Task) {
@@ -99,13 +114,16 @@ export class Tareas implements OnInit {
     } else {
       tarea.estado = 'Pendiente';
     }
-    this.taskService.actualizarTareas(tarea);
-    this.cargarTareas();
+    this.taskService.actualizarTarea(tarea).subscribe({
+      next: () => {
+        this.cargarTareas();
+      },
+    });
   }
 
   limpiarFormulario() {
     this.nuevaTarea = {
-      id: 0,
+      id: '',
       titulo: '',
       estado: '',
       prioridad: '',
@@ -126,4 +144,10 @@ export class Tareas implements OnInit {
     if (prioridad === 'Media') return 'prioridad-media';
     return 'prioridad-baja';
   }
+
+  existenTareas() {
+  return this.dataSource.data.length > 0;
+  }
+
 }
+

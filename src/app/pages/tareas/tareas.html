@@ -53,14 +53,14 @@
     </mat-card-content>
   </mat-card>
 
-  @if (tareas.length === 0) {
+  @if (!existenTareas()) {
     <mat-card class="mensaje">
       <mat-card-content>No existen tareas registradas</mat-card-content>
     </mat-card>
   } @else {
     <mat-card>
       <mat-card-content>
-        <table mat-table [dataSource]="tareas" class="tabla-tareas">
+        <table mat-table [dataSource]="dataSource" class="tabla-tareas">
           <ng-container matColumnDef="id">
             <th mat-header-cell *matHeaderCellDef>ID</th>
             <td mat-cell *matCellDef="let tarea">{{ tarea.id }}</td>
